@@ -106,9 +106,10 @@ const addOrderItems = async (req, res) => {
     console.log('\n🎨 Step 3: Using DECORATOR to add features');
     const basePrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
+    // ✅ Tổng tiền base = giá sản phẩm + phí vận chuyển (ĐÃ BAO GỒM SHIPPING FEE)
     const baseOrderData = {
       orderItems: cartItems,
-      totalPrice: basePrice + totalShippingFee,
+      totalPrice: basePrice + totalShippingFee, // ✅ Đã cộng shipping fee
       shippingAddress,
       paymentMethod: paymentMethod || 'COD'
     };
@@ -170,12 +171,13 @@ const addOrderItems = async (req, res) => {
       product: item.product,
     }));
 
+    // ✅ finalPrice đã bao gồm: basePrice + totalShippingFee + decoratorsCost
     const order = new Order({
       orderItems,
       user: req.user._id,
       shippingAddress,
       paymentMethod: paymentMethod || 'COD',
-      totalPrice: Number(finalPrice),
+      totalPrice: Number(finalPrice), // ✅ Đã bao gồm shipping fee + decorators
       orderStatus: 'Đang xử lý',
       isPaid: paymentResult.status === 'PAID',
       paidAt: paymentResult.paidAt || null,

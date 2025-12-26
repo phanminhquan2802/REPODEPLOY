@@ -45,8 +45,8 @@ class BookProduct extends Product {
   }
 
   calculateShipping() {
-    // Sách shipping fee thấp hơn
-    return this.price > 100000 ? 0 : 15000;
+    // Sách shipping fee thấp hơn - Luôn tính phí, không free
+    return 15000;
   }
 
   getCategory() {
@@ -74,8 +74,8 @@ class ElectronicProduct extends Product {
   }
 
   calculateShipping() {
-    // Đồ điện tử shipping fee cao hơn
-    return this.price > 500000 ? 0 : 30000;
+    // Đồ điện tử shipping fee cao hơn - Luôn tính phí, không free
+    return 30000;
   }
 
   getCategory() {
@@ -103,8 +103,8 @@ class ClothingProduct extends Product {
   }
 
   calculateShipping() {
-    // Quần áo shipping fee trung bình
-    return this.price > 200000 ? 0 : 20000;
+    // Quần áo shipping fee trung bình - Luôn tính phí, không free
+    return 20000;
   }
 
   getCategory() {

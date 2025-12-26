@@ -245,11 +245,6 @@ const Cart = () => {
                   <span className="font-semibold">{calculateTotal().toLocaleString()}₫</span>
                 </div>
                 
-                <div className="flex justify-between text-gray-600">
-                  <span>Phí vận chuyển</span>
-                  <span className="text-green-600 font-semibold">Miễn phí</span>
-                </div>
-                
                 <div className="border-t pt-3 flex justify-between text-lg font-bold">
                   <span>Tổng cộng</span>
                   <span className="text-red-600">{calculateTotal().toLocaleString()}₫</span>
@@ -274,7 +269,6 @@ const Cart = () => {
               <div className="mt-6 pt-6 border-t">
                 <h3 className="font-semibold text-gray-800 mb-3">🎁 Ưu đãi</h3>
                 <ul className="text-sm text-gray-600 space-y-2">
-                  <li>✓ Miễn phí vận chuyển toàn quốc</li>
                   <li>✓ Đổi trả trong 7 ngày</li>
                   <li>✓ Bảo hành sản phẩm chính hãng</li>
                 </ul>

@@ -20,7 +20,7 @@ function App() {
   
   return (
     <AuthProvider>
-      <Router>
+      <Router future={{ v7_startTransition: true }}>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <Routes>

@@ -278,7 +278,7 @@ const Home = () => {
         </div>
       </footer>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slideUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
