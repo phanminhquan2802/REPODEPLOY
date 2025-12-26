@@ -3,9 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   FaBook, FaFire, FaChevronLeft, FaChevronRight, FaShoppingCart 
 } from 'react-icons/fa';
-import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { cartAPI } from '../utils/api';
+import { cartAPI, productsAPI } from '../utils/api';
 
 const Home = () => {
   const { user } = useAuth();
@@ -49,11 +48,12 @@ const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/products');
+      const { data } = await productsAPI.getProducts();
       setFeaturedProducts(data.slice(0, 4));
       setNewProducts(data.slice(0, 8));
       setLoading(false);
     } catch (error) {
+      console.error('Error fetching products:', error);
       setLoading(false);
     }
   };

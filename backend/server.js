@@ -65,9 +65,27 @@ connectDB().catch(err => {
 
 const app = express();
 
-// CORS Configuration
+// CORS Configuration - Cho phép cả localhost (dev) và deploy URL (production)
+const allowedOrigins = [
+  'https://deploy-dacntt.vercel.app',
+  'https://deploy-livid-omega.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.CLIENT_URL
+].filter(Boolean); // Loại bỏ undefined/null
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || 'https://deploy-dacntt.vercel.app',
+  origin: function (origin, callback) {
+    // Cho phép requests không có origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️  CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

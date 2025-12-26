@@ -289,7 +289,7 @@ class EmailNotificationObserver extends OrderObserver {
       <p>Cảm ơn bạn đã tin tưởng và mua sắm tại SMART Store!</p>
       
       <center>
-        <a href="http://localhost:5173/my-orders" class="button">Xem đơn hàng</a>
+        <a href="${process.env.CLIENT_URL || 'https://deploy-dacntt.vercel.app'}/my-orders" class="button">Xem đơn hàng</a>
       </center>
     </div>
     
