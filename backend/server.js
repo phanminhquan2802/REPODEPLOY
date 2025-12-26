@@ -67,7 +67,7 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.CLIENT_URL || 'https://deploy-livid-omega.vercel.app',
+  origin: process.env.CLIENT_URL || 'https://deploy-dacntt.vercel.app',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

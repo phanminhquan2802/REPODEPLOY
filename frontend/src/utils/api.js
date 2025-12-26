@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://deploy-tfjo.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://deploydacntt.onrender.com/api';
 
 console.log('🔗 API Base URL:', API_URL);
 
