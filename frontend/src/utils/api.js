@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_URL =
-'https://deploydacntt.onrender.com/api'
+'https://deploydacntt.onrender.com/gapi'
 //'http://localhost:5000/api' // 
 console.log('🔗 API Base URL:', API_URL);
 
