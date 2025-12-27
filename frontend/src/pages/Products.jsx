@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { productsAPI, cartAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
@@ -50,6 +50,38 @@ const Products = () => {
 
     setSearchParams(params);
   };
+
+  // Hàm sắp xếp sản phẩm
+  const sortedProducts = useMemo(() => {
+    const productsCopy = [...products];
+    
+    switch (sortBy) {
+      case 'price_asc':
+        // Giá tăng dần (từ thấp đến cao)
+        return productsCopy.sort((a, b) => (a.price || 0) - (b.price || 0));
+      
+      case 'price_desc':
+        // Giá giảm dần (từ cao đến thấp)
+        return productsCopy.sort((a, b) => (b.price || 0) - (a.price || 0));
+      
+      case 'name_asc':
+        // Tên A-Z
+        return productsCopy.sort((a, b) => {
+          const nameA = (a.name || '').toLowerCase();
+          const nameB = (b.name || '').toLowerCase();
+          return nameA.localeCompare(nameB, 'vi');
+        });
+      
+      case 'newest':
+      default:
+        // Mới nhất (sắp xếp theo createdAt giảm dần)
+        return productsCopy.sort((a, b) => {
+          const dateA = new Date(a.createdAt || 0);
+          const dateB = new Date(b.createdAt || 0);
+          return dateB - dateA;
+        });
+    }
+  }, [products, sortBy]);
 
   // ✅ HÀM THÊM VÀO GIỎ HÀNG
   const handleAddToCart = async (productId, e) => {
@@ -112,7 +144,7 @@ const Products = () => {
             </svg>
           </button>
         </div>
-        <p className="text-gray-600">Tìm thấy {products.length} sản phẩm</p>
+        <p className="text-gray-600">Tìm thấy {sortedProducts.length} sản phẩm</p>
       </div>
 
       <div className="container mx-auto px-4 py-5">
@@ -153,7 +185,10 @@ const Products = () => {
             </div>
 
             <button
-              onClick={() => handleFilterChange('')}
+              onClick={() => {
+                handleFilterChange('');
+                setSortBy('newest');
+              }}
               className="ml-auto px-5 py-2 bg-white border-2 border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
             >
               ↻ Đặt lại
@@ -162,14 +197,14 @@ const Products = () => {
         </div>
 
         {/* Products Grid */}
-        {products.length === 0 ? (
+        {sortedProducts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-lg">
             <FaBook className="text-6xl text-gray-300 mx-auto mb-4" />
             <p className="text-gray-600 text-xl">Không có sản phẩm nào</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {products.map((product) => {
+            {sortedProducts.map((product) => {
               const isOutOfStock = !product.countInStock || product.countInStock === 0;
               
               return (

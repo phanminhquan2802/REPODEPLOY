@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api' || 'https://deploydacntt.onrender.com/api'
-
+const API_URL =
+'https://deploydacntt.onrender.com/api'
+//'http://localhost:5000/api' // 
 console.log('🔗 API Base URL:', API_URL);
 
 const api = axios.create({
