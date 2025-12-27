@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ordersAPI, productsAPI } from '../utils/api';
 import AdminProducts from '../components/AdminProducts';
-import { FaCog, FaBook, FaBoxOpen, FaLock } from 'react-icons/fa';
+import { FaCog, FaBook, FaBoxOpen, FaLock, FaSearch } from 'react-icons/fa';
 
 const Admin = () => {
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('products');
   const [orders, setOrders] = useState([]);
   const [productsCount, setProductsCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     if (user) {
@@ -157,7 +159,7 @@ const Admin = () => {
                   {orders
                     .filter(order => order.orderStatus !== 'Đã hủy')
                     .reduce((sum, order) => sum + (order.totalPrice || 0), 0)
-                    .toLocaleString()}đ
+                    .toLocaleString('vi-VN')}₫
                 </p>
               </div>
               <div className="text-5xl opacity-50">💰</div>
@@ -196,9 +198,75 @@ const Admin = () => {
 
             {activeTab === 'orders' && (
               <div>
-                <h2 className="text-xl font-bold mb-6">Danh sách đơn hàng</h2>
-                <div className="space-y-4">
-                  {orders.map((order) => (
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                  <h2 className="text-xl font-bold">Danh sách đơn hàng</h2>
+                  
+                  {/* Search và Filter */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                      <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Tìm theo mã đơn, tên KH, SĐT..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    
+                    {/* Status Filter */}
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="all">Tất cả trạng thái</option>
+                      <option value="Đang xử lý">Đang xử lý</option>
+                      <option value="Đã xác nhận">Đã xác nhận</option>
+                      <option value="Đang giao">Đang giao</option>
+                      <option value="Đã giao">Đã giao</option>
+                      <option value="Đã hủy">Đã hủy</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Filtered Orders */}
+                {(() => {
+                  const filteredOrders = orders.filter((order) => {
+                    // Filter by status
+                    const statusMatch = statusFilter === 'all' || order.orderStatus === statusFilter;
+                    
+                    // Filter by search term
+                    const searchLower = searchTerm.toLowerCase();
+                    const orderId = order._id?.toLowerCase() || '';
+                    const customerName = order.user?.name?.toLowerCase() || '';
+                    const customerEmail = order.user?.email?.toLowerCase() || '';
+                    const phone = order.shippingAddress?.phone?.toLowerCase() || '';
+                    const address = order.shippingAddress?.address?.toLowerCase() || '';
+                    
+                    const searchMatch = !searchTerm || 
+                      orderId.includes(searchLower) ||
+                      customerName.includes(searchLower) ||
+                      customerEmail.includes(searchLower) ||
+                      phone.includes(searchLower) ||
+                      address.includes(searchLower);
+                    
+                    return statusMatch && searchMatch;
+                  });
+
+                  return (
+                    <>
+                      {filteredOrders.length > 0 && (
+                        <p className="text-sm text-gray-600 mb-4">
+                          Tìm thấy <strong>{filteredOrders.length}</strong> đơn hàng
+                          {searchTerm && ` cho "${searchTerm}"`}
+                          {statusFilter !== 'all' && ` - Trạng thái: ${statusFilter}`}
+                        </p>
+                      )}
+                      
+                      <div className="space-y-4">
+                        {filteredOrders.map((order) => (
                     <div key={order._id} className="bg-white border border-gray-200 rounded-lg p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div>
@@ -244,8 +312,32 @@ const Admin = () => {
                         </select>
                       </div>
                     </div>
-                  ))}
-                </div>
+                        ))}
+                      </div>
+
+                      {filteredOrders.length === 0 && (
+                        <div className="text-center py-12 bg-white border border-gray-200 rounded-lg">
+                          <p className="text-gray-600">
+                            {searchTerm || statusFilter !== 'all' 
+                              ? 'Không tìm thấy đơn hàng nào phù hợp' 
+                              : 'Chưa có đơn hàng nào'}
+                          </p>
+                          {(searchTerm || statusFilter !== 'all') && (
+                            <button
+                              onClick={() => {
+                                setSearchTerm('');
+                                setStatusFilter('all');
+                              }}
+                              className="mt-4 text-blue-600 hover:text-blue-800 underline"
+                            >
+                              Xóa bộ lọc
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             )}
           </div>
